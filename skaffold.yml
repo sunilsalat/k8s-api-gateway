@@ -1,0 +1,29 @@
+apiVersion: skaffold/v2beta29
+kind: Config
+metadata:
+  name: myapp
+build:
+  artifacts:
+    - image: service_a
+      context: ./service_a
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: "*.js"
+            dest: /app
+    - image: service_b
+      context: ./service_b
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: "*.js"
+            dest: /app
+
+deploy:
+  kubectl:
+    manifests:
+      - k8s/service_a.yml
+      - k8s/service_b.yml
+      - k8s/ingress.yml
