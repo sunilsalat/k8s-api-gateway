@@ -1,15 +1,13 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: multi-service-ingress
+  name: service-a-ingress
   annotations:
-    # nginx.ingress.kubernetes.io/rewrite-target: /$1
     kubernetes.io/ingress.class: "kong"
     konghq.com/strip-path: "true"
+    konghq.com/plugins: rate-limit-service-a,api-key-service-a
 spec:
-  # ingressClassName: nginx
   ingressClassName: kong
-
   rules:
     - host: myapp.local
       http:
@@ -21,7 +19,21 @@ spec:
                 name: service-a
                 port:
                   number: 80
-
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: service-b-ingress
+  annotations:
+    kubernetes.io/ingress.class: "kong"
+    konghq.com/strip-path: "true"
+    konghq.com/plugins: rate-limit-service-b,api-key-service-b
+spec:
+  ingressClassName: kong
+  rules:
+    - host: myapp.local
+      http:
+        paths:
           - path: /b
             pathType: Prefix
             backend:

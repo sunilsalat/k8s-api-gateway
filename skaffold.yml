@@ -26,4 +26,9 @@ deploy:
     manifests:
       - k8s/service_a.yml
       - k8s/service_b.yml
+      - k8s/rate-limit-service-a.yml
+      - k8s/rate-limit-service-b.yml
+      - k8s/api-key-service-a.yml
+      - k8s/api-key-service-b.yml
+      - k8s/api-consumer.yml
       - k8s/ingress.yml

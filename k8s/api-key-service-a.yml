@@ -1,0 +1,11 @@
+apiVersion: configuration.konghq.com/v1
+kind: KongPlugin
+metadata:
+  name: api-key-service-a
+  namespace: default
+config:
+  key_names:
+    - apikey
+    - x-api-key
+  hide_credentials: false
+plugin: key-auth
