@@ -1,0 +1,88 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opa-bundle-server
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: opa-bundle-server
+  template:
+    metadata:
+      labels:
+        app: opa-bundle-server
+    spec:
+      containers:
+        - name: bundle-server
+          image: python:3-alpine
+          ports:
+            - containerPort: 8080
+              name: http
+          command:
+            - /bin/sh
+            - -c
+            - |
+              set -e
+              echo "Creating OPA bundle..."
+
+              # Create bundle directory structure
+              mkdir -p /web/bundles/kong/policy
+              mkdir -p /tmp/bundle/kong/policy
+
+              # Copy policy file from mounted volume
+              cp /policies/policy.rego /tmp/bundle/kong/policy/policy.rego
+
+              # Create manifest
+              cat > /tmp/bundle/.manifest <<EOF
+              {
+                "revision": "v1.0.0",
+                "roots": ["kong/policy"]
+              }
+              EOF
+
+              # Create tar.gz bundle
+              cd /tmp/bundle
+              tar -czf /web/bundles/kong/policy/bundle.tar.gz kong .manifest
+
+              echo "Bundle created successfully at /web/bundles/kong/policy/bundle.tar.gz"
+              echo "Starting HTTP server on port 8080..."
+
+              # Start HTTP server
+              cd /web
+              python3 -m http.server 8080
+          volumeMounts:
+            - name: bundle-policy
+              mountPath: /policies
+              readOnly: true
+          livenessProbe:
+            httpGet:
+              path: /bundles/kong/policy/bundle.tar.gz
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /bundles/kong/policy/bundle.tar.gz
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 10
+      volumes:
+        - name: bundle-policy
+          configMap:
+            name: opa-bundle-policy
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: opa-bundle-server
+  namespace: default
+spec:
+  selector:
+    app: opa-bundle-server
+  ports:
+    - port: 8080
+      nodePort: 30080
+      targetPort: 8080
+      protocol: TCP
+      name: http

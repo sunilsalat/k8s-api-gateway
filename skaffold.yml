@@ -32,3 +32,6 @@ deploy:
       - k8s/api-key-service-b.yml
       - k8s/api-consumer.yml
       - k8s/ingress.yml
+      - k8s/opa-bundle-server.yml
+      # - k8s/opa-server.yml
+      # - k8s/opa-plugin.yml

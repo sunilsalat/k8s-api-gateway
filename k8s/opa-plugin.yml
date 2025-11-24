@@ -1,0 +1,13 @@
+apiVersion: configuration.konghq.com/v1
+kind: KongPlugin
+metadata:
+  name: opa-plugin
+  namespace: default
+config:
+  opa_host: opa-server.default.svc.cluster.local
+  opa_port: 8181
+  opa_path: /v1/data/kong/policy
+  include_consumer_in_opa_input: true
+  include_route_in_opa_input: true
+  include_service_in_opa_input: true
+plugin: opa

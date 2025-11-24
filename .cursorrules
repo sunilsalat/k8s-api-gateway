@@ -1,0 +1,7 @@
+# Cursor Rules
+
+## Documentation Files
+- DO NOT create .md documentation files unless explicitly requested by the user
+- Only create documentation when the user specifically asks for it
+- Prefer inline comments in code over separate documentation files
+

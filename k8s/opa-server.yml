@@ -1,0 +1,78 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: opa-config
+  namespace: default
+data:
+  config.yaml: |
+    # OPA server configuration
+    # Policies are loaded from bundle server (opa-bundle-server)
+    services:
+      opa-bundle-server:
+        url: http://opa-bundle-server.default.svc.cluster.local:8080
+    bundles:
+      authz:
+        service: opa-bundle-server
+        resource: /bundles/kong/policy/bundle.tar.gz
+        polling:
+          min_delay_seconds: 60
+          max_delay_seconds: 120
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opa-server
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: opa-server
+  template:
+    metadata:
+      labels:
+        app: opa-server
+    spec:
+      containers:
+        - name: opa
+          image: openpolicyagent/opa:latest
+          ports:
+            - containerPort: 8181
+              name: http
+          args:
+            - "run"
+            - "--server"
+            - "--config-file=/config/config.yaml"
+          volumeMounts:
+            - name: opa-config
+              mountPath: /config
+          livenessProbe:
+            httpGet:
+              path: /health?plugins
+              port: 8181
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /health?plugins
+              port: 8181
+            initialDelaySeconds: 5
+            periodSeconds: 5
+      volumes:
+        - name: opa-config
+          configMap:
+            name: opa-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: opa-server
+  namespace: default
+spec:
+  selector:
+    app: opa-server
+  ports:
+    - port: 8181
+      targetPort: 8181
+      protocol: TCP
+      name: http
