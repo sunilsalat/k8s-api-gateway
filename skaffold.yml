@@ -24,14 +24,17 @@ build:
 deploy:
   kubectl:
     manifests:
-      - k8s/service_a.yml
-      - k8s/service_b.yml
-      - k8s/rate-limit-service-a.yml
-      - k8s/rate-limit-service-b.yml
-      - k8s/api-key-service-a.yml
-      - k8s/api-key-service-b.yml
-      - k8s/api-consumer.yml
-      - k8s/ingress.yml
-      - k8s/opa-bundle-server.yml
-      # - k8s/opa-server.yml
-      # - k8s/opa-plugin.yml
+      - k8s/service_a/service_a.yml
+      - k8s/service_b/service_b.yml
+      - k8s/service_a/rate-limit-service-a.yml
+      - k8s/service_b/rate-limit-service-b.yml
+      - k8s/service_a/api-key-service-a.yml
+      - k8s/service_b/api-key-service-b.yml
+      - k8s/global/api-consumer.yml
+      - k8s/global/ingress.yml
+      # - k8s/opa/opa-bundle-server.yml
+      # - k8s/opa/opa-server.yml
+      # - k8s/opa/opa-plugin.yml
+      - k8s/postgres/postgres-secret.yml
+      - k8s/postgres/postgres-pvc.yml
+      - k8s/postgres/postgres-deployment.yml
