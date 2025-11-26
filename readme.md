@@ -28,3 +28,9 @@ kubectl delete storageclass longhorn
 # LOCAL PATH
 
 kubectl apply -f https://raw.githubusercontent.com/rancher/local-path-provisioner/v0.0.24/deploy/local-path-storage.yaml
+
+# INFLUX DB
+
+helm repo add influxdata https://helm.influxdata.com/
+helm repo update
+helm install inflx influxdata/influxdb2 -n influx --create-namespace
