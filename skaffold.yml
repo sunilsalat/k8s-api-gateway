@@ -24,17 +24,21 @@ build:
 deploy:
   kubectl:
     manifests:
-      - k8s/service_a/service_a.yml
-      - k8s/service_b/service_b.yml
-      - k8s/service_a/rate-limit-service-a.yml
-      - k8s/service_b/rate-limit-service-b.yml
-      - k8s/service_a/api-key-service-a.yml
-      - k8s/service_b/api-key-service-b.yml
-      - k8s/global/api-consumer.yml
-      - k8s/global/ingress.yml
-      # - k8s/opa/opa-bundle-server.yml
-      # - k8s/opa/opa-server.yml
-      # - k8s/opa/opa-plugin.yml
-      - k8s/postgres/postgres-secret.yml
-      - k8s/postgres/postgres-pvc.yml
-      - k8s/postgres/postgres-deployment.yml
+      # Applications
+      - k8s/applications/service-a/service_a.yml
+      - k8s/applications/service-b/service_b.yml
+      # Policies
+      - k8s/policies/rate-limit/rate-limit-service-a.yml
+      - k8s/policies/rate-limit/rate-limit-service-b.yml
+      - k8s/policies/api-key/api-key-service-a.yml
+      - k8s/policies/api-key/api-key-service-b.yml
+      - k8s/policies/opa-plugin.yml
+      # Networking
+      - k8s/networking/api-consumer.yml
+      - k8s/networking/ingress.yml
+      # Platform Services
+      - k8s/platform/postgres/postgres-secret.yml
+      - k8s/platform/postgres/postgres-pvc.yml
+      - k8s/platform/postgres/postgres-deployment.yml
+      # - k8s/platform/opa/opa-bundle-server.yml
+      # - k8s/platform/opa/opa-server.yml

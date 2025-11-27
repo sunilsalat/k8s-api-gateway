@@ -4,11 +4,11 @@ const app = express();
 const PORT = 3001;
 
 app.get("/", (req, res) => {
-  res.send("Hello from Service B!");
+  res.send("Hello from Interface Service!");
 });
 
 app.get("/health", (req, res) => {
-  res.status(200).send("OKK");
+  res.status(200).send("OK");
 });
 
 app.get("/test", (req, res) => {
